@@ -66,11 +66,17 @@ function createTray() {
   tray.on('click', () => win?.show());
 }
 
-app.whenReady().then(() => {
+// 개발 중 캐시로 인한 변경사항 미반영 방지
+app.commandLine.appendSwitch('disable-http-cache');
+
+app.whenReady().then(async () => {
   // 렌더러에서 Web Notification API 권한 요청 시 자동 허용
   session.defaultSession.setPermissionRequestHandler((_wc, permission, callback) => {
     callback(permission === 'notifications');
   });
+
+  // 시작 시 HTTP 캐시 비우기
+  await session.defaultSession.clearCache();
 
   createWindow();
   createTray();
