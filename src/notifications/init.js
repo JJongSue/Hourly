@@ -25,17 +25,28 @@ function hydrateUI() {
   updateTestDesc();
 }
 
-function updateTestDesc() {
+function updateTestDesc(nextDate) {
   const desc = $('notif-test-desc');
   if (!desc) return;
   const platform = NotificationManager.platform;
   const bridge = typeof window !== 'undefined' ? window.hourlyBridge : null;
   if (platform === 'electron' && !bridge) {
     desc.textContent = '⚠ bridge 없음 — preload 오류';
-  } else if (platform === 'web' && typeof Notification === 'undefined') {
+    return;
+  }
+  if (platform === 'web' && typeof Notification === 'undefined') {
     desc.textContent = '⚠ 이 브라우저는 알림 미지원';
+    return;
+  }
+  if (nextDate) {
+    desc.textContent = `다음 알람: ${nextDate.toLocaleTimeString()} (탭하면 즉시 전송)`;
   } else {
-    desc.textContent = `플랫폼: ${platform} — 탭하면 즉시 전송`;
+    const s = NotificationManager.getSettings();
+    if (s.enabled) {
+      desc.textContent = `플랫폼: ${platform} — 스케줄 시작 중...`;
+    } else {
+      desc.textContent = `플랫폼: ${platform} — Hourly Alarm 토글을 켜세요`;
+    }
   }
 }
 
@@ -102,6 +113,8 @@ function bindUI() {
 function start() {
   hydrateUI();
   bindUI();
+  window.addEventListener('hourly:schedule-update', (e) => updateTestDesc(e.detail?.next || null));
+  window.addEventListener('hourly:fired', () => toast('알람 발화 ✓'));
   NotificationManager.init().catch(err => console.warn('NotificationManager init failed', err));
 }
 
