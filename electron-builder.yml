@@ -1,0 +1,29 @@
+appId: com.yourname.hourly
+productName: Hourly
+directories:
+  output: release
+files:
+  - dist/**
+  - electron/**
+  - package.json
+asar: true
+
+win:
+  target:
+    - nsis
+  icon: electron/icon.ico
+
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  perMachine: false
+
+mac:
+  target:
+    - dmg
+  category: public.app-category.productivity
+  icon: electron/icon.icns
+
+linux:
+  target:
+    - AppImage

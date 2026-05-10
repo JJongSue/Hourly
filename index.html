@@ -597,6 +597,35 @@ textarea,select{font-family:var(--sans);font-weight:regular;}
     </div>
   </div>
   <div class="set-sect">
+    <div class="set-lbl">Notifications</div>
+    <div class="set-group">
+      <div class="set-row">
+        <div class="set-rl"><div class="set-name">Hourly Alarm</div><div class="set-desc">Notify every hour while app is running</div></div>
+        <button class="toggle" id="notif-enabled" type="button"></button>
+      </div>
+      <div class="set-row">
+        <div class="set-rl"><div class="set-name">Message</div><div class="set-desc">Text shown in the notification</div></div>
+        <input class="set-input" id="notif-message" type="text" maxlength="60" placeholder="Hourly check-in" style="max-width:160px;text-align:right;border:none;background:transparent;font:inherit;color:inherit">
+      </div>
+      <div class="set-row">
+        <div class="set-rl"><div class="set-name">Quiet Hours Start</div><div class="set-desc">No alarms after this time</div></div>
+        <input class="set-input" id="notif-quiet-start" type="time" style="border:none;background:transparent;font:inherit;color:inherit">
+      </div>
+      <div class="set-row">
+        <div class="set-rl"><div class="set-name">Quiet Hours End</div><div class="set-desc">Alarms resume at this time</div></div>
+        <input class="set-input" id="notif-quiet-end" type="time" style="border:none;background:transparent;font:inherit;color:inherit">
+      </div>
+      <div class="set-row">
+        <div class="set-rl"><div class="set-name">Debug Interval</div><div class="set-desc">For testing only — overrides hourly</div></div>
+        <select class="set-select" id="notif-debug-interval">
+          <option value="0">Off (hourly)</option>
+          <option value="1">Every 1 min</option>
+          <option value="5">Every 5 min</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="set-sect">
     <div class="set-lbl">Data</div>
     <div class="set-group">
       <div class="set-row" onclick="exportAll()"><div class="set-rl"><div class="set-name">Export All</div><div class="set-desc">Download all notes as JSON</div></div><span class="chev">›</span></div>
@@ -1182,5 +1211,6 @@ loadDateFmtPref();
 renderCalHeader();
 renderHourly();
 </script>
+<script type="module" src="./src/notifications/init.js"></script>
 </body>
 </html>
