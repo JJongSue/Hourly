@@ -1,9 +1,12 @@
-import { app, BrowserWindow, Tray, Menu, Notification, ipcMain, nativeImage } from 'electron';
+import { app, BrowserWindow, Tray, Menu, Notification, ipcMain, nativeImage, session } from 'electron';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const isDev = !!process.env.ELECTRON_DEV;
+
+// Windows 개발 모드에서 시스템 알림이 동작하려면 반드시 설정 필요
+app.setAppUserModelId('com.yourname.hourly');
 
 let win = null;
 let tray = null;
@@ -55,16 +58,26 @@ function createTray() {
 }
 
 app.whenReady().then(() => {
+  // 렌더러에서 Web Notification API 권한 요청 시 자동 허용
+  session.defaultSession.setPermissionRequestHandler((_wc, permission, callback) => {
+    callback(permission === 'notifications');
+  });
+
   createWindow();
   createTray();
 
   ipcMain.handle('notify', (_evt, opts) => {
-    if (!Notification.isSupported()) return false;
-    new Notification({
-      title: opts?.title || 'Hourly',
-      body: opts?.body || 'Hourly check-in'
-    }).show();
-    return true;
+    try {
+      new Notification({
+        title: opts?.title || 'Hourly',
+        body: opts?.body || 'Hourly check-in',
+        silent: false
+      }).show();
+      return true;
+    } catch (e) {
+      console.error('Notification error:', e);
+      return false;
+    }
   });
 
   app.on('activate', () => {
