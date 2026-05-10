@@ -18,7 +18,9 @@ function createWindow() {
     title: 'Hourly',
     autoHideMenuBar: true,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.cjs'),
+      preload: app.isPackaged
+        ? path.join(process.resourcesPath, 'app.asar.unpacked', 'electron', 'preload.cjs')
+        : path.join(__dirname, 'preload.cjs'),
       contextIsolation: true,
       nodeIntegration: false
     }
@@ -29,6 +31,13 @@ function createWindow() {
   } else {
     win.loadFile(path.join(__dirname, '..', 'dist', 'index.html'));
   }
+
+  // Ctrl+Shift+I 로 DevTools 열기 (디버깅용)
+  win.webContents.on('before-input-event', (_e, input) => {
+    if (input.control && input.shift && input.key === 'I') {
+      win.webContents.toggleDevTools();
+    }
+  });
 
   win.on('close', (e) => {
     if (!app.isQuitting) {
