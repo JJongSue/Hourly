@@ -11,7 +11,7 @@
     "cap:sync": "vite build && cap sync",
     "cap:ios": "vite build && cap sync ios && cap open ios",
     "cap:android": "vite build && cap sync android && cap open android",
-    "electron:dev": "ELECTRON_DEV=1 electron .",
+    "electron:dev": "cross-env ELECTRON_DEV=1 electron .",
     "electron:build:win": "vite build && electron-builder --win",
     "electron:build:mac": "vite build && electron-builder --mac"
   },
@@ -25,6 +25,7 @@
     "@capacitor/assets": "^3.0.5",
     "@capacitor/cli": "^6.0.0",
     "@capacitor/ios": "^6.0.0",
+    "cross-env": "^7.0.3",
     "electron": "^31.0.0",
     "electron-builder": "^24.13.3",
     "vite": "^5.4.0"
